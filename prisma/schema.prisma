@@ -1,0 +1,33 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Citas {
+  id_cita    Int      @id
+  id_doctor  Int
+  fecha_hora DateTime @db.Timestamp(0)
+  Doctores   Doctores @relation(fields: [id_doctor], references: [id_doctor], onDelete: NoAction, onUpdate: NoAction, map: "citas_id_doctor_foreign")
+}
+
+model Clinicas {
+  id_clinica Int        @id
+  nombre     String     @db.VarChar(150)
+  direccion  String     @db.VarChar(400)
+  imagen     String
+  Doctores   Doctores[]
+}
+
+model Doctores {
+  id_doctor     Int      @id
+  codigo_doctor String   @db.VarChar(10)
+  nombre        String   @db.VarChar(250)
+  edad          Int
+  id_clinica    Int
+  Clinicas      Clinicas @relation(fields: [id_clinica], references: [id_clinica], onDelete: NoAction, onUpdate: NoAction, map: "doctores_id_clinica_foreign")
+  Citas         Citas[]
+}
